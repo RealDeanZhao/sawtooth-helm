@@ -1,0 +1,13 @@
+name: sawtooth
+version: 0.0.1
+appVersion: 0.0.1
+description: hyperledger sawtooth
+keywords:
+- hyperledger
+- sawtooth
+sources:
+- https://github.com/RealDeanZhao/sawtooth-helm
+maintainers:
+- name: Dean Zhao
+  email: zestxjest@outlook.com
+engine: gotpl

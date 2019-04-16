@@ -1,0 +1,10 @@
+validator:
+  deployment:
+    name: "sawtooth-validator-0"
+  image:
+    repository: hyperledger/sawtooth-validator
+    tag: 1.1
+  genesis: false
+persistence:
+  enabled: true
+  claimName: ""
