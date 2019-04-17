@@ -56,7 +56,7 @@ spec:
                sawtooth.poet.ztest_minimum_win_count=100000 \
                -o /etc/sawtooth/config.batch; \
            fi && \
-           if [ ! -e /var/lib/sawtooth/genesis.batch ]; then \
+           if [ ! -e /var/lib/sawtooth/genesis.batch ] && [ ! -e /var/lib/block-00.lmdb ]; then \
              echo 'creating genesis.batch'; \
              sawadm genesis /etc/sawtooth/config-genesis.batch /etc/sawtooth/config.batch /etc/sawtooth/poet.batch; \
            fi && \
@@ -66,14 +66,8 @@ spec:
              --bind component:tcp://eth0:4004 \
              --bind consensus:tcp://eth0:5050 \
              --bind network:tcp://eth0:8800 \
-{{- if .Values.validator.seeds }}
-             --seeds {{ .Values.validator.seeds }} \
-{{- end }}
-{{- if .Values.opentsdb.db }}
-             --opentsdb-db {{ .Values.opentsdb.db }} \
-{{- end }}
-{{- if .Values.opentsdb.url }}
-             --opentsdb-url {{ .Values.opentsdb.url }} \
+{{- if .Values.validator.args }}
+             {{ .Values.validator.args }} \
 {{- end }}
             "
         ports:

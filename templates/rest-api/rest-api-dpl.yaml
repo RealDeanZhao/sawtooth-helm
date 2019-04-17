@@ -22,10 +22,7 @@ spec:
         - -c
         - "sawtooth-rest-api \
            -C tcp://{{ .Release.Name }}-validator:4004 -B 0.0.0.0:8008 \
-{{- if .Values.opentsdb.db }}
-           --opentsdb-db {{ .Values.opentsdb.db }} \
-{{- end }}
-{{- if .Values.opentsdb.url }}
-           --opentsdb-url {{ .Values.opentsdb.url }} \
+{{- if .Values.rest_api.args }}
+             {{ .Values.rest_api.args }} \
 {{- end }}
         "

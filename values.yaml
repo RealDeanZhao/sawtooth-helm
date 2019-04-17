@@ -4,7 +4,7 @@ validator:
     repository: hyperledger/sawtooth-validator
     tag: 1.1
   genesis: false
-  seeds: ""
+  args: ""
 poet_engine:
   name: sawtooth-poet-engine
   image:
@@ -15,6 +15,7 @@ rest_api:
   image:
     repository: hyperledger/sawtooth-rest-api
     tag: 1.1
+  args: ""
 settings_tp:
   name: sawtooth-settings-tp
   image:
@@ -38,6 +39,4 @@ persistence:
   storageClass:
     create: false
     name: ""
-opentsdb:
-  db: ""
-  url: ""
+
