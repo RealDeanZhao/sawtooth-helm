@@ -8,7 +8,7 @@ spec:
   selector:
     name: {{ .Release.Name }}-rest-api
   ports:
-    - name: "8008"
-      protocol: TCP
-      port: 8008
-      targetPort: 8008
+  - name: "8008"
+    protocol: TCP
+    port: 8008
+    targetPort: 8008

@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: {{ .Release.Name }}-rest-api
@@ -17,7 +17,7 @@ spec:
           - name: api
             containerPort: 8008
           command:
-            - bash
+          - bash
           args:
           - -c
           - "sawtooth-rest-api -C tcp://{{ .Release.Name }}:4004 \
