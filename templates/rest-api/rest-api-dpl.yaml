@@ -9,18 +9,16 @@ spec:
     metadata:
       labels:
         name: {{ .Release.Name }}-rest-api
-      spec:
-        containers:
-        - name: sawtooth-rest-api
-          image: hyperledger/sawtooth-rest-api:1.1
-          ports:
-          - name: api
-            containerPort: 8008
-          command:
-          - bash
-          args:
-          - -c
-          - "sawtooth-rest-api -C tcp://{{ .Release.Name }}:4004 \
-          --opentsdb-db sawtooth_metrics \
-          --opentsdb-url influxdb.default:8086 \
-          -B {{ .Release.Name }}:8008"
+    spec:
+      containers:
+      - name: sawtooth-rest-api
+        image: hyperledger/sawtooth-rest-api:1.1
+        ports:
+        - name: api
+          containerPort: 8008
+        command:
+        - bash
+        args:
+        - -c
+        - "sawtooth-rest-api -C tcp://{{ .Release.Name }}:4004 \
+        -B {{ .Release.Name }}:8008"
