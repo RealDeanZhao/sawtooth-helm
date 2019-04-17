@@ -99,7 +99,7 @@ spec:
         - bash
         args:
         - -c
-        - "
+        - "cp -a /poet-shared/keys /etc/sawtooth && \
 {{- if .Values.validator.genesis }}
           if [ ! -f /poet-shared/poet-enclave-measurement ]; then \
             poet enclave measurement >> /poet-shared/poet-enclave-measurement; \
@@ -114,7 +114,6 @@ spec:
             echo 'waiting for validator key'; \
             sleep 1; \
           done && \
-          cp -a /poet-shared/keys /etc/sawtooth && \
           if [ ! -f /poet-shared/poet.batch ]; then \
             echo 'create poet.batch';
             poet registration create -k /etc/sawtooth/keys/validator.priv -o /poet-shared/poet.batch && \
