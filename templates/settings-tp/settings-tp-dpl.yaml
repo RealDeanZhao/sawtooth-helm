@@ -9,12 +9,12 @@ spec:
     metadata:
       labels:
         name: {{ .Release.Name }}-settings-tp
-      spec:
-        containers:
-        - name: sawtooth-settings-tp
-          image: hyperledger/sawtooth-settings-tp:1.1
-          command:
-          - bash
-          args:
-          - -c
-          - "sawtooth-rest-api -C tcp://{{ .Release.Name }}-validator:4004"
+    spec:
+      containers:
+      - name: sawtooth-settings-tp
+        image: hyperledger/sawtooth-settings-tp:1.1
+        command:
+        - bash
+        args:
+        - -c
+        - "sawtooth-rest-api -C tcp://{{ .Release.Name }}-validator:4004"
