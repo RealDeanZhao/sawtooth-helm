@@ -11,8 +11,8 @@ spec:
         name: {{ .Release.Name }}-rest-api
     spec:
       containers:
-      - name: sawtooth-rest-api
-        image: hyperledger/sawtooth-rest-api:1.1
+      - name: {{ .Values.rest_api.name }}
+        image: {{ .Values.rest_api.image.repository }}:{{ .Values.rest_api.image.tag }}
         ports:
         - name: api
           containerPort: 8008
@@ -20,5 +20,12 @@ spec:
         - bash
         args:
         - -c
-        - "sawtooth-rest-api -C tcp://{{ .Release.Name }}:4004 \
-        -B {{ .Release.Name }}:8008"
+        - "sawtooth-rest-api \
+           -C tcp://{{ .Release.Name }}-validator:4004 -B 0.0.0.0:8008 \
+{{- if .Values.opentsdb.db }}
+           --opentsdb-db {{ .Values.opentsdb.db }} \
+{{- end }}
+{{- if .Values.opentsdb.url }}
+           --opentsdb-url {{ .Values.opentsdb.url }} \
+{{- end }}
+        "

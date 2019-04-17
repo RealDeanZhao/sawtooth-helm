@@ -11,21 +11,20 @@ spec:
         name: {{ .Release.Name }}-validator
     spec:
       containers:
-      - name: {{ .Release.Name }}-validator
+      - name: {{ .Values.validator.name }}
         image: {{ .Values.validator.image.repository }}:{{ .Values.validator.image.tag }}
         command:
         - bash
         args:
         - -c  
-        - "
-{{- if .Values.validator.genesis }}
-        mkdir -p /etc/sawtooth/keys; \
+        - "mkdir -p /etc/sawtooth/keys; \
            if [ ! -f /etc/sawtooth/keys/validator.priv ]; then \
              echo 'creating validator key'; \
              sawadm keygen; \
            fi && \
-           mkdir -p /poet-shared/sawtooth-0 || true && \
-           cp -a /etc/sawtooth/keys /poet-shared/sawtooth-0 && \
+           mkdir -p /poet-shared || true && \
+           cp -a /etc/sawtooth/keys /poet-shared && \
+{{- if .Values.validator.genesis }}
            while [ ! -f /poet-shared/poet-enclave-measurement ]; do \
                echo 'waiting for poet-enclave-measurement'; \
                sleep 1; \
@@ -57,23 +56,26 @@ spec:
                sawtooth.poet.ztest_minimum_win_count=100000 \
                -o /etc/sawtooth/config.batch; \
            fi && \
-           if [ ! -e /var/lib/sawtooth/genesis.batch ] && [ ! -e /etc/sawtooth/chain-exists ]; then \
+           if [ ! -e /var/lib/sawtooth/genesis.batch ]; then \
              echo 'creating genesis.batch'; \
              sawadm genesis /etc/sawtooth/config-genesis.batch /etc/sawtooth/config.batch /etc/sawtooth/poet.batch; \
-             touch /etc/sawtooth/chain-exists; \
            fi && \
 {{- end }}
            sawtooth-validator \
-             --endpoint tcp://$SAWTOOTH_0_SERVICE_HOST:8800 \
+             --endpoint tcp://{{ .Release.Name }}-validator:8800 \
              --bind component:tcp://eth0:4004 \
              --bind consensus:tcp://eth0:5050 \
              --bind network:tcp://eth0:8800 \
-             --peers tcp://$SAWTOOTH_1_SERVICE_HOST:8800 \
-             --peers tcp://$SAWTOOTH_2_SERVICE_HOST:8800 \
-             --peers tcp://$SAWTOOTH_3_SERVICE_HOST:8800 \
-             --peers tcp://$SAWTOOTH_4_SERVICE_HOST:8800 \
-             --opentsdb-db sawtooth_metrics \
-             --opentsdb-url influxdb.default:8086"
+{{- if .Values.validator.seeds }}
+             --seeds {{ .Values.validator.seeds }} \
+{{- end }}
+{{- if .Values.opentsdb.db }}
+             --opentsdb-db {{ .Values.opentsdb.db }} \
+{{- end }}
+{{- if .Values.opentsdb.url }}
+             --opentsdb-url {{ .Values.opentsdb.url }} \
+{{- end }}
+            "
         ports:
         - name: tp
           containerPort: 4004
@@ -97,7 +99,40 @@ spec:
         - name: sawtooth-data
           mountPath: "/poet-shared"
           subPath: poet-shared
+      - name: {{ .Values.poet_engine.name }}
+        image: {{ .Values.poet_engine.image.repository }}:{{ .Values.poet_engine.image.tag }}
+        command:
+        - bash
+        args:
+        - -c
+        - "
+{{- if .Values.validator.genesis }}
+          if [ ! -f /poet-shared/poet-enclave-measurement ]; then \
+            poet enclave measurement >> /poet-shared/poet-enclave-measurement; \
+          fi && \
+          if [ ! -f /poet-shared/poet-enclave-basename ]; then \
+            poet enclave basename >> /poet-shared/poet-enclave-basename; \
+          fi && \
+          if [ ! -f /poet-shared/simulator_rk_pub.pem ]; then \
+            cp /etc/sawtooth/simulator_rk_pub.pem /poet-shared; \
+          fi && \
+          while [ ! -f /poet-shared/keys/validator.priv ]; do \
+            echo 'waiting for validator key'; \
+            sleep 1; \
+          done && \
+          cp -a /poet-shared/keys /etc/sawtooth && \
+          if [ ! -f /poet-shared/poet.batch ]; then \
+            echo 'create poet.batch';
+            poet registration create -k /etc/sawtooth/keys/validator.priv -o /poet-shared/poet.batch && \
+            echo 'created poet.batch';
+          fi && \
+{{- end }}
+         poet-engine -C tcp://{{ .Release.Name }}-validator:5050 --component tcp://{{ .Release.Name }}-validator:4004"
+        volumeMounts:
+        - name: sawtooth-data
+          mountPath: "/poet-shared"
+          subPath: poet-shared
       volumes:
       - name: sawtooth-data
         persistentVolumeClaim:
-          claimName: {{ .Values.persistence.claimName }}
+          claimName: {{ required "missing pvc name" .Values.persistence.pvc.name }}

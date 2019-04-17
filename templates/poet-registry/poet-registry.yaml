@@ -11,8 +11,8 @@ spec:
         name: {{ .Release.Name }}-registry-tp
     spec:
       containers:
-      - name: sawtooth-poet-validator-registry-tp
-        image: hyperledger/sawtooth-poet-validator-registry-tp:1.1
+      - name: {{ .Values.poet_validator_registry_tp.name }}
+        image: {{ .Values.poet_validator_registry_tp.image.repository }}:{{ .Values.poet_validator_registry_tp.image.tag }}
         command:
         - bash
         args:

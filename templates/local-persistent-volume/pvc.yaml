@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ required "missing pvc name" .Values.persistence.pvc.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ required "missing pvc storage" .Values.persistence.pvc.storage }}
+  storageClassName: {{ required "missing storage class" .Values.persistence.storageClass.name }}

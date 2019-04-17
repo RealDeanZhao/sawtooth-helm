@@ -11,10 +11,10 @@ spec:
         name: {{ .Release.Name }}-settings-tp
     spec:
       containers:
-      - name: sawtooth-settings-tp
-        image: hyperledger/sawtooth-settings-tp:1.1
+      - name: {{ .Values.settings_tp.name }}
+        image: {{ .Values.settings_tp.image.repository }}:{{ .Values.settings_tp.image.tag }}
         command:
         - bash
         args:
         - -c
-        - "sawtooth-rest-api -C tcp://{{ .Release.Name }}-validator:4004"
+        - "settings-tp -C tcp://{{ .Release.Name }}-validator:4004"

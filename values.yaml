@@ -1,10 +1,43 @@
 validator:
-  deployment:
-    name: "sawtooth-validator-0"
+  name: "sawtooth-validator"
   image:
     repository: hyperledger/sawtooth-validator
     tag: 1.1
   genesis: false
+  seeds: ""
+poet_engine:
+  name: sawtooth-poet-engine
+  image:
+    repository: hyperledger/sawtooth-poet-engine
+    tag: 1.1
+rest_api:
+  name: sawtooth-rest-api
+  image:
+    repository: hyperledger/sawtooth-rest-api
+    tag: 1.1
+settings_tp:
+  name: sawtooth-settings-tp
+  image:
+    repository: hyperledger/sawtooth-settings-tp
+    tag: 1.1
+poet_validator_registry_tp:
+  name: sawtooth-poet-validator-registry-tp
+  image:
+    repository: hyperledger/sawtooth-poet-validator-registry-tp
+    tag: 1.1
 persistence:
   enabled: true
-  claimName: ""
+  pv:
+    name: ""
+    path: ""
+    capacity: 10Gi
+    node: ""
+  pvc:
+    name: ""
+    storage: 10Gi
+  storageClass:
+    create: false
+    name: ""
+opentsdb:
+  db: ""
+  url: ""
