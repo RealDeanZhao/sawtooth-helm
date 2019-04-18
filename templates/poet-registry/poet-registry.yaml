@@ -17,4 +17,4 @@ spec:
         - bash
         args:
         - -c
-        - "poet-validator-registry-tp -C tcp://{{ .Release.Name }}-validator:4004"
+        - "poet-validator-registry-tp -vv -C tcp://{{ .Release.Name }}-validator:4004"

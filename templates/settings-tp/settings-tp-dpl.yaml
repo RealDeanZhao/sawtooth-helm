@@ -17,4 +17,4 @@ spec:
         - bash
         args:
         - -c
-        - "settings-tp -C tcp://{{ .Release.Name }}-validator:4004"
+        - "settings-tp -vv -C tcp://{{ .Release.Name }}-validator:4004"

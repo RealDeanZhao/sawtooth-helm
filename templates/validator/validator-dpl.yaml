@@ -56,7 +56,7 @@ spec:
                sawtooth.poet.ztest_minimum_win_count=100000 \
                -o /etc/sawtooth/config.batch; \
            fi && \
-           if [ ! -e /var/lib/sawtooth/genesis.batch ] && [ ! -e /var/lib/block-00.lmdb ]; then \
+           if [ ! -e /var/lib/sawtooth/genesis.batch ] && [ ! -e /var/lib/sawtooth/block-00.lmdb ]; then \
              echo 'creating genesis.batch'; \
              sawadm genesis /etc/sawtooth/config-genesis.batch /etc/sawtooth/config.batch /etc/sawtooth/poet.batch; \
            fi && \
@@ -120,11 +120,15 @@ spec:
             echo 'created poet.batch';
           fi && \
 {{- end }}
-         poet-engine -C tcp://{{ .Release.Name }}-validator:5050 --component tcp://{{ .Release.Name }}-validator:4004"
+         echo 'start engine' && \
+         poet-engine -vv -C tcp://$HOSTNAME:5050 --component tcp://$HOSTNAME:4004 && echo 'engine started'"
         volumeMounts:
         - name: sawtooth-data
           mountPath: "/poet-shared"
           subPath: poet-shared
+        - name: sawtooth-data
+          mountPath: "/var/lib/sawtooth"
+          subPath: lib
       volumes:
       - name: sawtooth-data
         persistentVolumeClaim:
