@@ -34,8 +34,8 @@ data:
 {{ if .Values.validator.config.transaction_signer -}}
     transactor.transaction_signer = {{ .Values.validator.config.transaction_signer | quote }}
 {{ end }}
-  rest-api.toml: |
-    bind = "0.0.0.0:8008"
+  rest_api.toml: |
+    bind = ["0.0.0.0:8008"]
     connect = "tcp://{{ .Release.Name }}-validator:4004"
     timeout = {{ .Values.rest_api.config.timeout }}
     client_max_size = {{ int64 .Values.rest_api.config.client_max_size }}

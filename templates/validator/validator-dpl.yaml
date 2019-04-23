@@ -118,8 +118,7 @@ spec:
             echo 'created poet.batch';
           fi && \
 {{- end }}
-         echo 'start engine' && \
-         poet-engine -vv -C tcp://$HOSTNAME:5050 --component tcp://$HOSTNAME:4004 && echo 'engine started'"
+         poet-engine -vv -C tcp://$HOSTNAME:5050 --component tcp://$HOSTNAME:4004"
         volumeMounts:
         - name: sawtooth-data
           mountPath: "/poet-shared"

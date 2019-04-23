@@ -1,6 +1,8 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  annotations:
+    reloader.stakater.com/auto: "true"
   name: {{ .Release.Name }}-rest-api
   namespace: {{ .Release.Namespace }}
 spec:
@@ -20,9 +22,11 @@ spec:
         - bash
         args:
         - -c
-        - "sawtooth-rest-api \
-           -C tcp://{{ .Release.Name }}-validator:4004 -B 0.0.0.0:8008 \
-{{- if .Values.rest_api.args }}
-             {{ .Values.rest_api.args }} \
-{{- end }}
-        "
+        - "ln -sf /sawtooth-config/rest_api.toml /etc/sawtooth/rest_api.toml; sawtooth-rest-api"
+        volumeMounts:
+        - name: sawtooth-config
+          mountPath: "/sawtooth-config"
+      volumes:
+      - name: sawtooth-config
+        configMap:
+          name: {{ .Release.Name }}-config
