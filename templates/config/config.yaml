@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Release.Name }}-config
+  namespace: {{ .Release.Namespace }}
+data:
+  validator.toml: |
+    bind = {{ .Values.validator.config.bind }}
+    peering = {{ .Values.validator.config.peering | quote }}
+    endpoint = {{ tpl .Values.validator.config.endpoint . | quote }}
+    seeds = {{ .Values.validator.config.seeds }}
+{{ if .Values.validator.config.peers -}}
+    peers = {{ .Values.validator.config.peers }}
+{{ end }}
+    scheduler = {{ .Values.validator.config.scheduler | quote }}
+{{ if .Values.validator.config.network_public_key -}}
+    network_public_key = {{ .Values.validator.config.network_public_key | quote }}
+{{ end }}
+{{ if .Values.validator.config.network_private_key -}}
+    network_private_key = {{ .Values.validator.config.network_private_key | quote }}
+{{ end }}
+    minimum_peer_connectivity = {{ .Values.validator.config.minimum_peer_connectivity }}
+    maximum_peer_connectivity = {{ .Values.validator.config.maximum_peer_connectivity }}
+    opentsdb_url = {{ .Values.opentsdb.url | quote }}
+    opentsdb_db = {{ .Values.opentsdb.db | quote }}
+    opentsdb_username = {{ .Values.opentsdb.username | quote }}
+    opentsdb_password = {{ .Values.opentsdb.password | quote }}
+    [roles]
+    network = {{ .Values.validator.config.network | quote }}
+    [permissions]
+{{ if .Values.validator.config.transactor -}}
+    transactor = {{ .Values.validator.config.transactor | quote }}
+{{- end }}
+{{ if .Values.validator.config.transaction_signer -}}
+    transactor.transaction_signer = {{ .Values.validator.config.transaction_signer | quote }}
+{{ end }}
+  rest-api.toml: |
+    bind = "0.0.0.0:8008"
+    connect = "tcp://{{ .Release.Name }}-validator:4004"
+    timeout = {{ .Values.rest_api.config.timeout }}
+    client_max_size = {{ int64 .Values.rest_api.config.client_max_size }}
+    opentsdb_url = {{ .Values.opentsdb.url | quote }}
+    opentsdb_db = {{ .Values.opentsdb.db | quote }}
+    opentsdb_username = {{ .Values.opentsdb.username | quote }}
+    opentsdb_password = {{ .Values.opentsdb.password | quote }}

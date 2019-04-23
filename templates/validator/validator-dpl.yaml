@@ -1,6 +1,8 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  annotations:
+    reloader.stakater.com/auto: "true"
   name: {{ .Release.Name }}-validator
   namespace: {{ .Release.Namespace }}
 spec:
@@ -17,7 +19,8 @@ spec:
         - bash
         args:
         - -c  
-        - "mkdir -p /etc/sawtooth/keys; \
+        - "ln -sf /sawtooth-config/validator.toml /etc/sawtooth/validator.toml; \
+           mkdir -p /etc/sawtooth/keys; \
            if [ ! -f /etc/sawtooth/keys/validator.priv ]; then \
              echo 'creating validator key'; \
              sawadm keygen; \
@@ -62,15 +65,7 @@ spec:
              sawadm genesis /etc/sawtooth/config-genesis.batch /etc/sawtooth/config.batch /etc/sawtooth/poet.batch; \
            fi && \
 {{- end }}
-           sawtooth-validator \
-             --endpoint tcp://{{ .Release.Name }}-validator:8800 \
-             --bind component:tcp://eth0:4004 \
-             --bind consensus:tcp://eth0:5050 \
-             --bind network:tcp://eth0:8800 \
-{{- if .Values.validator.args }}
-             {{ .Values.validator.args }} \
-{{- end }}
-            "
+           sawtooth-validator"
         ports:
         - name: tp
           containerPort: 4004
@@ -94,6 +89,8 @@ spec:
         - name: sawtooth-data
           mountPath: "/poet-shared"
           subPath: poet-shared
+        - name: sawtooth-config
+          mountPath: "/sawtooth-config"
       - name: {{ .Values.poet_engine.name }}
         image: {{ .Values.poet_engine.image.repository }}:{{ .Values.poet_engine.image.tag }}
         command:
@@ -134,3 +131,6 @@ spec:
       - name: sawtooth-data
         persistentVolumeClaim:
           claimName: {{ required "missing pvc name" .Values.persistence.pvc.name }}
+      - name: sawtooth-config
+        configMap:
+          name: {{ .Release.Name }}-config

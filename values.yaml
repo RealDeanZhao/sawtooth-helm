@@ -4,7 +4,25 @@ validator:
     repository: hyperledger/sawtooth-validator
     tag: 1.1
   genesis: false
-  args: ""
+  config:
+    bind: '["component:tcp://eth0:4004", "consensus:tcp://eth0:5050", "consensus:tcp://eth0:5050"]'
+    peering: dynamic
+    endpoint: tcp://{{ .Release.Name }}-validator:8800
+    seeds: ''
+    peers: ""
+    scheduler: parallel
+    network_public_key: 
+    network_private_key:
+    minimum_peer_connectivity: 3
+    maximum_peer_connectivity: 10
+    network: trust
+    transactor:
+    transaction_signer:
+opentsdb:
+  url:
+  db: metrics
+  username:
+  password:
 poet_engine:
   name: sawtooth-poet-engine
   image:
@@ -15,7 +33,9 @@ rest_api:
   image:
     repository: hyperledger/sawtooth-rest-api
     tag: 1.1
-  args: ""
+  config:
+    timeout: 300
+    client_max_size: 10485760
 settings_tp:
   name: sawtooth-settings-tp
   image:
