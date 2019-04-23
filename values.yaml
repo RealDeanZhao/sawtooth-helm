@@ -5,7 +5,7 @@ validator:
     tag: 1.1
   genesis: false
   config:
-    bind: '["component:tcp://eth0:4004", "consensus:tcp://eth0:5050", "consensus:tcp://eth0:5050"]'
+    bind: '["component:tcp://eth0:4004", "consensus:tcp://eth0:5050", "network:tcp://eth0:8800"]'
     peering: dynamic
     endpoint: tcp://{{ .Release.Name }}-validator:8800
     seeds: ''
