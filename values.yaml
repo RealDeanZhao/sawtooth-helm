@@ -20,7 +20,7 @@ validator:
     transaction_signer:
 opentsdb:
   url:
-  db: metrics
+  db:
   username:
   password:
 poet_engine:
@@ -40,6 +40,11 @@ settings_tp:
   name: sawtooth-settings-tp
   image:
     repository: hyperledger/sawtooth-settings-tp
+    tag: 1.1
+block_info_tp:
+  name: sawtooth-block-info-tp
+  image:
+    repository: hyperledger/sawtooth-block-info-tp
     tag: 1.1
 poet_validator_registry_tp:
   name: sawtooth-poet-validator-registry-tp

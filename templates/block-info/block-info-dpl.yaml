@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-block-info-tp
+  namespace: {{ .Release.Namespace }}
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: {{ .Release.Name }}-block-info-tp
+    spec:
+      containers:
+      - name: {{ .Values.block_info_tp.name }}
+        image: {{ .Values.block_info_tp.image.repository }}:{{ .Values.block_info_tp.image.tag }}
+        command:
+        - bash
+        args:
+        - -c
+        - "block-info-tp -vv -C tcp://{{ .Release.Name }}-validator:4004"
