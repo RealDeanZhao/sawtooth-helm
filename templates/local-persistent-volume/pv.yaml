@@ -4,7 +4,7 @@ metadata:
   name: {{ required "missing pv name" .Values.persistence.pv.name }}
 spec:
   capacity:
-    storage: 10Gi
+    storage: {{ required "missing pv name" .Values.persistence.pv.capacity }}
   accessModes:
   - ReadWriteOnce
   storageClassName: {{ required "missing storage class" .Values.persistence.storageClass.name }}

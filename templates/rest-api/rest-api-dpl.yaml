@@ -11,6 +11,7 @@ spec:
     metadata:
       labels:
         name: {{ .Release.Name }}-rest-api
+        app: sawtooth-rest-api
     spec:
       containers:
       - name: {{ .Values.rest_api.name }}

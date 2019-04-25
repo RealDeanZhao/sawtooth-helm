@@ -62,6 +62,5 @@ persistence:
     name: ""
     storage: 10Gi
   storageClass:
-    create: false
-    name: ""
+    name: "sawtooth-standard"
 
